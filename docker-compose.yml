@@ -8,4 +8,4 @@ networks:
     driver: bridge
 
 volumes:
-  pgdata:
+  postgres-data:
