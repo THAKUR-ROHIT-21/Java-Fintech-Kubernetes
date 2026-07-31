@@ -2,3 +2,10 @@ include:
   - docker/postgres/docker-compose.yml
   - docker/backend/docker-compose.yml
   - docker/frontend/docker-compose.yml
+
+networks:
+  ledgerline-net:
+    driver: bridge
+
+volumes:
+  pgdata:

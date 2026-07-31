@@ -1,17 +1,23 @@
-
 services:
   frontend:
     build:
-      context: ../..
-      dockerfile: docker/frontend/Dockerfile
+      context: ../../frontend
+      dockerfile: ../docker/frontend/Dockerfile
+
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
-    image: ${DOCKER_REGISTRY:-ledgerline}/frontend:${TAG:-latest}
+        VITE_API_URL: ${VITE_API_URL}
+
+    image: biharibabu1/frontend:1.0
+
     container_name: ledgerline-frontend
+
     restart: unless-stopped
+
     depends_on:
       - backend
+
     ports:
-      - "${FRONTEND_HOST_PORT:-80}:80"
+      - "5173:80"
+
     networks:
       - ledgerline-net
