@@ -1,0 +1,33 @@
+# Postgres — standalone compose file for the database service.
+# Included by the root docker-compose.yml, but can also be run alone for
+# local development (backend/frontend run outside Docker via mvn/npm).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ledgerline-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-bankingdb}
+      POSTGRES_USER: ${DB_USERNAME:-banking_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-banking_pass123}
+    ports:
+      - "${DB_HOST_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-banking_user} -d ${DB_NAME:-bankingdb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ledgerline-net
+
+networks:
+  ledgerline-net:
+    name: ledgerline-net
+    driver: bridge
+
+volumes:
+  pgdata:
+    name: ledgerline-pgdata

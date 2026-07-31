@@ -1,0 +1,49 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ledgerline-banking
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/bankingdb}
+    username: ${DB_USERNAME:banking_user}
+    password: ${DB_PASSWORD:banking_pass123}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+    open-in-view: false
+
+  sql:
+    init:
+      mode: always
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:3f8b9c1a7d2e4f6091b8c3a5d7e9f1023f8b9c1a7d2e4f6091b8c3a5d7e9f102}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}   # 24 hours
+  cors:
+    allowed-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:5173}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    org.hibernate.SQL: WARN
+    com.bank.banking: INFO
+
