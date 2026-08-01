@@ -18,10 +18,11 @@ spec:
         app: backend
 
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: worker-node-1
       containers:
         - name: backend
           image: biharibabu1/backend:1.0
-
           ports:
             - containerPort: 8080
 
