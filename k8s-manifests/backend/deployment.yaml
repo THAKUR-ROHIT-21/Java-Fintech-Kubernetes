@@ -15,7 +15,7 @@ spec:
         app: backend
     spec:
       nodeSelector:
-        kubernetes.io/hostname: worker-node-1
+        kubernetes.io/hostname: worker-node-01
       containers:
         - name: backend
           image: biharibabu1/backend:1.0
