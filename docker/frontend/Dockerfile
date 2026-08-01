@@ -7,8 +7,8 @@ RUN npm ci
 
 COPY frontend/ .
 
-ARG VITE_API_URL=http://localhost:8080/api
-ENV VITE_API_URL=${VITE_API_URL}
+# ARG VITE_API_URL=http://localhost:8080/api
+ARG VITE_API_URL=http://3.111.179.103:30080/actuator/health
 
 RUN npm run build
 
