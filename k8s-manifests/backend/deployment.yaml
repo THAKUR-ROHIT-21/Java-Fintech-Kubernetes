@@ -1,0 +1,52 @@
+apiVersion: apps:v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: banking
+
+spec:
+  replica: 1
+  selector:
+    matchLabels:
+      app: backend
+  
+  template:
+    metadata:
+      labels:
+        app: backend
+
+    spec:
+      containers:
+        -name: backend
+        image: biharibabu1/backend:1.0
+        ports:
+          - containerPort: 8080
+        env:
+          - name: DB_URL
+            value: jdbc:postgresql://postgres-svc.banking.svc.cluster.local:5432/bankingdb
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: POSTGER_USER
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: POSTGER_PASSWORD
+          - name: JWT_SECRET
+            value: "1df0f6fe85156663c1c36121a92b3fc1702bcf52779752d63c25d75915bcd831"
+          - name: JWT_EXPIRATION_MS
+            value: "86400000"
+          - name: CORS_ALLOWED_ORIGIN
+            value: "*"
+        
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 50
+          periodSeconds: 10
+          
+
+  
