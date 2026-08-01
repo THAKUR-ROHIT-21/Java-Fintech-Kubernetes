@@ -1,12 +1,17 @@
 apiVersion: v1
 kind: Service
-Metadata:
+
+metadata:
   name: postgres-svc
   namespace: banking
+
 spec:
-  clusterIP: none
+  clusterIP: None
+
   selector:
     app: postgres
-  port:
+
+  ports:
     - port: 5432
-    
+      targetPort: 5432
+      protocol: TCP
