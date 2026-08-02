@@ -40,9 +40,16 @@ spec:
               value: "86400000"
             - name: CORS_ALLOWED_ORIGIN
               value: "*"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
           readinessProbe:
             httpGet: 
               path: /actuator/health
               port: 8080
             initialDelaySeconds: 50
-            periodSeconds: 10  
+            periodSeconds: 10 
