@@ -64,6 +64,7 @@ alertmanager:
       group_by: ["alertname"]
       group_wait: 30s
       group_interval: 4h
+      repeat_interval: 4h
       routes:
         - receivers: "null"
           matchers:
