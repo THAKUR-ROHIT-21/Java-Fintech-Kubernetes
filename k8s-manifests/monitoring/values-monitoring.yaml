@@ -56,24 +56,31 @@ alertmanager:
   service:
     type: NodePort
     nodePort: 30093
-  config: 
+
+  config:
     global:
       resolve_timeout: 5m
+
     route:
       receiver: "discord-notification"
-      group_by: ["alertname"]
+      group_by:
+        - alertname
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 4h
+
       routes:
-        - receivers: "null"
+        - receiver: "null"
           matchers:
-            - alertname =~ "Watchdog | Kube.*Unreachable|Alertmanager.*Failed.*|etcd.*"
-          
-      receiver:
-        - name: "null"
-          discord_configs:
-            - webhook_url: "https://discord.com/api/webhooks/1533819338023239761/RDUNHufV_jbB447qfLI6IhPKuOyxA5DfZ2WozIAPUUEZVZ-Z7kCsXCkZhQtNcG5SDWTk"
+            - 'alertname =~ "Watchdog|Kube.*Unreachable|Alertmanager.*Failed.*|etcd.*"'
+
+    receivers:
+      - name: "null"
+
+      - name: "discord-notification"
+        discord_configs:
+          - webhook_url: "https://discord.com/api/webhooks/1534056759889498173/4CLu1ctKvfaVFpkEZGeOCWItWVXPMlTdjLAh1JpUafwIb4OEL7yaC_sTobdvqtmeeDPo"
+            send_resolved: true
 
 
 additionalPrometheusRulesMap:
@@ -91,7 +98,6 @@ additionalPrometheusRulesMap:
 
             annotations:
               description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is in CrashLoopBackOff"
-
 
           - alert: kubePodOOMKilled
             expr: kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} == 1
