@@ -7,7 +7,7 @@ services:
       args:
         VITE_API_URL: ${VITE_API_URL}
 
-    image: biharibabu1/frontend:1.4
+    image: biharibabu1/frontend:1.5
 
     container_name: ledgerline-frontend
 
