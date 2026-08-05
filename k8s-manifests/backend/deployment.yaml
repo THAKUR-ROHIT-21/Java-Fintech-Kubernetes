@@ -1,55 +1,95 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
+
+metadata:
   name: backend
   namespace: banking
 
 spec:
   replicas: 1
+
   selector:
     matchLabels:
       app: backend
+
   template:
     metadata:
       labels:
         app: backend
+
     spec:
       nodeSelector:
-        kubernetes.io/hostname: worker-node-01
+        kubernetes.io/hostname: woker-node-01
+
       containers:
         - name: backend
           image: biharibabu1/backend:1.1
+          imagePullPolicy: Always
+
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
           env:
             - name: DB_URL
-              value: jdbc:postgresql://postgres-svc.banking.svc.cluster.local:5432/bankingdb
+              value: "jdbc:postgresql://postgres-svc.banking.svc.cluster.local:5432/bankingdb"
+
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_USER
+
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret 
+                  name: postgres-secret
                   key: POSTGRES_PASSWORD
+
             - name: JWT_SECRET
-              value: "1df0f6fe85156663c1c36121a92b3fc1702bcf52779752d63c25d75915bcd831"
+              valueFrom:
+                secretKeyRef:
+                  name: banking-backend-secret
+                  key: JWT_SECRET
+
             - name: JWT_EXPIRATION_MS
               value: "86400000"
+
             - name: CORS_ALLOWED_ORIGIN
-              value: "*"
+              value: "http://banking.biharibabu.online"
+
+            - name: JAVA_TOOL_OPTIONS
+              value: "-XX:InitialRAMPercentage=25.0 -XX:MaxRAMPercentage=70.0"
+
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
-            limits:
-              memory: "256Mi"
+              memory: "512Mi"
               cpu: "250m"
-          readinessProbe:
-            httpGet: 
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+
+          startupProbe:
+            httpGet:
               path: /actuator/health
               port: 8080
-            initialDelaySeconds: 50
-            periodSeconds: 10 
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 5
