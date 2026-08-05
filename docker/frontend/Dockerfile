@@ -8,7 +8,7 @@ RUN npm ci
 COPY frontend/ .
 
 # ARG VITE_API_URL=http://localhost:8080/api
-ARG VITE_API_URL=http://3.111.179.103:30080/api
+ARG VITE_API_URL=http://api.banking.biharibabu.online/api
 
 RUN npm run build
 
