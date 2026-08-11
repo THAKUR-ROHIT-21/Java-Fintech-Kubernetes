@@ -1,3 +1,4 @@
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 
@@ -18,8 +19,13 @@ spec:
         app: backend
 
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: woker-node-01
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: backend
 
       containers:
         - name: backend
@@ -64,11 +70,11 @@ spec:
 
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "250m"
+              cpu: "200m"
+              memory: "256Mi"
             limits:
-              memory: "1Gi"
               cpu: "1000m"
+              memory: "512Mi"
 
           startupProbe:
             httpGet:
@@ -82,9 +88,11 @@ spec:
             httpGet:
               path: /actuator/health
               port: 8080
+            initialDelaySeconds: 40
             periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 6
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
 
           livenessProbe:
             httpGet:
@@ -93,3 +101,4 @@ spec:
             periodSeconds: 20
             timeoutSeconds: 5
             failureThreshold: 5
+```
