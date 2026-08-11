@@ -1,4 +1,3 @@
-```yaml
 apiVersion: apps/v1
 kind: Deployment
 
@@ -101,4 +100,4 @@ spec:
             periodSeconds: 20
             timeoutSeconds: 5
             failureThreshold: 5
-```
+
